@@ -1,0 +1,26 @@
+{
+  "name": "fsoc-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tusharg376/FSOC-BE.git"
+  },
+  "author": "Tushar Gautam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tusharg376/FSOC-BE/issues"
+  },
+  "homepage": "https://github.com/Tusharg376/FSOC-BE#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.3",
+    "nodemon": "^2.0.22"
+  }
+}
