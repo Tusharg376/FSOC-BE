@@ -1,27 +1,37 @@
-const userModel = require('../../utils/models/userModel')
+const userModel = require('../../models/userModel')
 
 module.exports.emailCheck = async (email) => {
     try {
-        // console.log(email)
-        let result =  await userModel.findOne(email)
+        let result =  await userModel.findOne({email:email})
         return result
     } catch (error) {
-        throw error.message
+        throw error
     }
 }
 
-module.exports.createUser = (data) => {
+module.exports.phoneCheck = async function(phone) {
     try {
-        return userModel.create(data)
+        let result =  await userModel.findOne({phone:phone})
+        return result
     } catch (error) {
-        return res.status(500).send({ status: false, message: error.message })
+        throw error
     }
 }
 
-module.exports.login = (data) => {
+module.exports.createUser = async (data) => {
     try {
-        return userModel.findOne(data)
+        return await userModel.create(data)
     } catch (error) {
-        return res.status(500).send({ status: false, message: error.message })
+        throw error
+    }
+}
+
+module.exports.login = async (data) => {
+    try {
+        let result = await userModel.findOne(data)
+        // console.log(result)
+        return result
+    } catch (error) {
+        throw error
     }
 }

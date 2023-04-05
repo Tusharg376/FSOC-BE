@@ -1,14 +1,14 @@
 const express = require('express')
 const app = express()
-const port = 3001
 const routes = require('./routes/routes')
-const db = require('./db/connectDB')
+const {connectDb} = require('./db/connectDB')
 app.use(express.json())
+require('dotenv').config()
 
 app.use('/',routes)
 
-db.connectDB
+connectDb()
 
-app.listen(port, function(){
-    console.log(`server is connected on port ${port}`)
+app.listen(process.env.port, function(){
+    console.log(`server is connected on port ${process.env.port}`)
 })

@@ -1,4 +1,4 @@
-const userModel = require('../../utils/models/userModel')
+const userModel = require('../../models/userModel')
 const {isValidEmail,isValidName,isValidPassword,isValidPhone} = require('../../utils/validations/validations')
 const userServices = require('../../services/user/userServices')
 const jwt = require('jsonwebtoken')
@@ -21,7 +21,7 @@ const userCreate = async function(req,res){
         }
         if(!phone) return res.status(400).send({status:false,message:"please provide phone"})
         else {
-            data.phone = phone.trim
+            data.phone = phone.trim()
             if(!isValidPhone(phone)) return res.status(400).send({status:false,message:"invalid Phone format"})
         }
         if(!password) return res.status(400).send({status:false,message:"please provide password"})
@@ -30,14 +30,19 @@ const userCreate = async function(req,res){
             if(!isValidPassword) return res.status(400).send({status:false,message:"password must contain atleast one UpperCase,one LowerCase,one Numeric and one special character ranges between 8-15 characters"})
         }
     
-        //duplicate email check
-        let dupEmail =  userServices.emailCheck({email:email})
-        console.log(dupEmail)
+        // duplicate email check
+        let dupEmail = await userServices.emailCheck(email || phone)
         if(dupEmail) return res.status(400).send({status:false,message:"unique email is required"})
-        
+
+        //duplicate phone
+        let dupPhone = await userServices.phoneCheck(phone)
+        if(dupPhone) return res.status(400).send({status:false,message:"unique phone is required"})
+
         //creation of user data
         let final = await userServices.createUser(data)
+        // let final = await userModel.create(data)
         return res.status(201).send({status:true,message:'registered successfully',data:final})
+
     } catch (error) {
         return res.status(500).send({status:false,message:error.message})   
     }
@@ -56,7 +61,7 @@ const userLogin = async function(req,res){
     
         //check email and password are correct
     
-        let creCheck = login({email:email,password:password})
+        let creCheck = await userServices.login({email:email,password:password})
         if(!creCheck) return res.status(400).send({status:false,message:"email or password is incorrect"})
     
         // token creation 
