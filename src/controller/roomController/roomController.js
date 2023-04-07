@@ -60,6 +60,7 @@ const createRoom = async function(req,res){
         let finalData = await roomServices.createRoom(data)
 
         //=-=-=-=-=-=- adding room Id in user data =-=-=-=-=-=-=-=//
+        await userServices.addRoom(data.roomAdmin,finalData._id)
         if(users){
             for(let i=0 ;i<data.users.length;i++){
                 await userServices.addRoom(data.users[i], finalData._id)

@@ -53,3 +53,12 @@ module.exports.allRooms = async function (data) {
         throw err.message
     }
 }
+
+module.exports.newMessage = async function(roomId,data) {
+    try{
+        let result = await roomModel.findOneAndUpdate({_id:roomId}, {$set:{latestMessage:data}},{new:true})
+        return result
+    }catch(err){
+        throw err.message
+    }
+}

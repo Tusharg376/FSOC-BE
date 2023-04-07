@@ -46,8 +46,7 @@ module.exports.updateUser = async (userId,data) => {
 
 module.exports.getUserData = async (userId) => {
     try {
-        let result = await userModel.findById(userId).select({room:1,_id:0})
-        console.log(result)
+        let result = await userModel.findById(userId).select({rooms:1,_id:0})
         return result
     } catch (error) {
         throw error

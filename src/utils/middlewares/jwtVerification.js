@@ -8,7 +8,7 @@ const authentication = async function(req,res,next){
      }
      jwt.verify(token,process.env.secretKey,(err,decode) => {
          if(err){ return res.status(400).send({status:false,message :err.message})}
-         req.decode = decode
+         if(decode) req.decode = decode
      })
      next()
    } catch (error) {

@@ -1,9 +1,9 @@
-const userModel = require('../../models/userModel')
 const {isValidEmail,isValidName,isValidPassword,isValidPhone} = require('../../utils/validations/validations')
 const userServices = require('../../services/user/userServices')
 const jwt = require('jsonwebtoken')
 const uploadFile = require('../../utils/middlewares/aws')
 const bcrypt = require('bcrypt')
+
 
 const userCreate = async function(req,res){
     try {
@@ -46,7 +46,6 @@ const userCreate = async function(req,res){
             data.password = password.trim()
             if(!isValidPassword(password)) return res.status(400).send({status:false,message:"password must contain atleast one UpperCase,one LowerCase,one Numeric and one special character ranges between 8-15 characters"})
         }
-        console.log("pasok")
     
         //-----------Duplicate email check---------------//
         let dupEmail = await userServices.emailCheck(email || phone)
@@ -85,10 +84,9 @@ const userLogin = async function(req,res){
         //----check email and password are correct---//
         let creCheck = await userServices.login({email:email})
         if(!creCheck) return res.status(400).send({status:false,message:"User not found"})
-        // console.log(creCheck)
+       
         //-------------password matching------------//
         let checkPassword = await bcrypt.compare(password,creCheck.password)
-        // console.log(checkPassword)
         if(!checkPassword) return res.status(400).send({status:false,message:"Invalid password"})
 
         //-------------token creation--------------// 

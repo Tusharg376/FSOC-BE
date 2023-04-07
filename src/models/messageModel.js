@@ -9,7 +9,7 @@ const messageSchema = mongoose.Schema({
     content:{
         type:String
     },
-    room:{
+    roomId:{
         type:objectId,
         ref:'room'
     }
