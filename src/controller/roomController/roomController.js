@@ -15,7 +15,7 @@ const createRoom = async function(req,res){
             if(!validations.isValidName(roomName)) return res.status(400).send({status:false,message: 'invalid room name'})
             data.roomName = roomName.trim()
         }
-        
+
         //=--=-=-=-=-=-=-users validation=-===-=-=-=-==-//
         if(users){
             let temp = users.split(",")
@@ -66,14 +66,16 @@ const addMember = async function(req,res){
         if(!validations.isValidMongooseId(userId)) return res.status(400).send({status:false,message:"invalid user id"})
     
         //=-=-=-=-check if user already addedin room=-=-=-//
-        let check = roomServices.getRoom(roomId)
-        if(!check) return res.status(400).send({status:false,message:"room not found"})    
-    
+        let check = await roomServices.getRoom(roomId)
+        if(!check) return res.status(400).send({status:false,message:"room not found"})
         let usersArray = check.users
         if(usersArray.includes(userId)) return res.status(400).send({status:false,message:"user already added in room"})
-    
+        
+        //=-==-=-check if user is admin or not=-==-=-==-=//
+        if(check.roomAdmin != req.decode.userId) return res.status(400).send({status:false,message:"only admin can add a member"})
+        
         //=-=-=-=-==addition of user in room =-=-=--=-==-//
-        let finalData = roomServices.updateRoom(roomId, userId)
+        let finalData = await roomServices.updateRoom(roomId, userId)
         return res.status(200).send({status:true,message:finalData})
 
     } catch (error) {
