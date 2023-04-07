@@ -1,5 +1,6 @@
 const userModel = require('../../models/userModel')
 
+
 module.exports.emailCheck = async (email) => {
     try {
         let result =  await userModel.findOne({email:email})
@@ -29,8 +30,15 @@ module.exports.createUser = async (data) => {
 module.exports.login = async (data) => {
     try {
         let result = await userModel.findOne(data)
-        // console.log(result)
         return result
+    } catch (error) {
+        throw error
+    }
+}
+
+module.exports.updateUser = async (userId,data) => {
+    try {
+       return await userModel.findOneAndUpdate({_id: userId},{$set:{...data}},{new:true})
     } catch (error) {
         throw error
     }

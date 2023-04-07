@@ -4,6 +4,8 @@ const routes = require('./routes/routes')
 const {connectDb} = require('./db/connectDB')
 app.use(express.json())
 require('dotenv').config()
+const multer = require('multer')
+app.use(multer().any())-
 
 app.use('/',routes)
 

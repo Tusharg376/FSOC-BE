@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const objectId = mongoose.Schema.Types.ObjectId
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -18,6 +19,13 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    profile:{
+        type:String,
+        required:true
+    },
+    rooms:{
+        type:[objectId]
     }
 },{timestamps:true})
 

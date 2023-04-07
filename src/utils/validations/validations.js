@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+
+
 module.exports.isValidEmail = (email) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(email)
@@ -18,3 +21,6 @@ module.exports.isValidName = (name) => {
     return nm.test(name)
 }
 
+module.exports.isValidMongooseId = (userId) => {
+    return mongoose.isValidObjectId(userId)
+}
