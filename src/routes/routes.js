@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {userCreate,userLogin,updateUser} = require('../controller/userController/userController')
-const {createRoom,addMember} = require('../controller/roomController/roomController')
+const {createRoom,addMember,renameRoom,removeMember} = require('../controller/roomController/roomController')
 const {authentication} = require('../utils/middlewares/jwtVerification')
 
 //--------user Routes----------//
@@ -12,5 +12,7 @@ router.put('/updateUser', authentication, updateUser)
 //--------room Routes----------//
 router.post('/createRoom' ,authentication ,createRoom)
 router.post('/addMember', authentication ,addMember)
+router.put('/renameRoom', authentication ,renameRoom)
+router.put('/removeMember', authentication ,removeMember)
 
 module.exports = router

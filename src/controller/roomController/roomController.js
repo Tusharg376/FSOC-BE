@@ -12,7 +12,6 @@ const createRoom = async function(req,res){
         if(!roomName) {
             return res.status(400).send({status:false,message: 'Room name is required'})
         }else{
-            if(!validations.isValidName(roomName)) return res.status(400).send({status:false,message: 'invalid room name'})
             data.roomName = roomName.trim()
         }
 
@@ -66,13 +65,15 @@ const addMember = async function(req,res){
         if(!validations.isValidMongooseId(userId)) return res.status(400).send({status:false,message:"invalid user id"})
     
         //=-=-=-=-check if user already addedin room=-=-=-//
-        let check = await roomServices.getRoom(roomId)
-        if(!check) return res.status(400).send({status:false,message:"room not found"})
-        let usersArray = check.users
+        let roomDetails = await roomServices.getRoom(roomId)
+        if(!roomDetails) return res.status(400).send({status:false,message:"room not found"})
+        let usersArray = roomDetails.users
         if(usersArray.includes(userId)) return res.status(400).send({status:false,message:"user already added in room"})
         
-        //=-==-=-check if user is admin or not=-==-=-==-=//
-        if(check.roomAdmin != req.decode.userId) return res.status(400).send({status:false,message:"only admin can add a member"})
+        //=-==-=- Check if user is admin or not if the room is private=-==-=-==-=//
+        if(roomDetails.isPrivate == true){
+            if(roomDetails.roomAdmin != req.decode.userId) return res.status(400).send({status:false,message:"only admin can add a member"})
+        }
         
         //=-=-=-=-==addition of user in room =-=-=--=-==-//
         let finalData = await roomServices.updateRoom(roomId, userId)
@@ -84,4 +85,62 @@ const addMember = async function(req,res){
 
 }
 
-module.exports = {createRoom,addMember}
+const renameRoom = async function(req,res){
+    
+    try {
+        let data = req.body
+        
+        //=-====-=-=-=-=- room Id validations =-=-=-=-==-==-=-=-//
+        if(!data.roomId) return res.status(400).send({status:false,message:"please provide room Id"})
+        if(!validations.isValidMongooseId(data.roomId)) return res.status(400).send({status:false,message:"invalid room id"})
+    
+        //=-==-==-=-=-=-= Room Name validation =-=-=-=-=-=-=-=-=//
+        if(!data.roomName) return res.status(400).send({status:false,message:"please provide room name"})
+        
+        //=-==-==-=-=-=-= Admin validation =-=-=-=-=-=-=-=-=//
+        let roomDetails = await roomServices.getRoom(data.roomId)
+        if(!roomDetails) return res.status(400).send({status:false,message:"room not found"})
+        if(roomDetails.isPrivate == true){
+            if(roomDetails.roomAdmin!= req.decode.userId) return res.status(400).send({status:false,message:"only admin can rename a room"})
+        }
+    
+        //=-=-=-==-=-=-= Chenge Room Name =-=-=-=-=-=-=-=-=-//
+        let finalData = await roomServices.updateRoomName(data.roomId,data.roomName)
+        return res.status(200).send({status:true, data:finalData})
+    } catch (error) {
+        return res.status(500).send({status:false, message:error.message})
+    }
+}
+
+const removeMember = async function(req,res){
+    try {
+
+        let data = req.body;
+    
+        //=-=-=-=-=-=- Validation for Room ID =-=-==-=-=-//
+        if(!data.roomId) return res.status(400).send({status:false,message:"please provide room Id"})
+        if(!validations.isValidMongooseId(data.roomId)) return res.status(400).send({status:false,message:"invalid room id"})
+    
+        //=-=-=-=-=-=-=-=- Room Data =-=-=-=-=-=-=-=-=-//
+        let roomDetails = await roomServices.getRoom(data.roomId)
+        if(!roomDetails) return res.status(400).send({status:false,message:"room not found"})    
+        
+        //=-=-=--=-=-= Validation for UserId =-=-=-=-=-=-//
+        if(!data.userId) return res.status(400).send({status:false,message:"please provide userId"})
+        if(!validations.isValidMongooseId(data.userId)) return res.status(400).send({status:false,message:"invalid user id"})
+        let usersArray = roomDetails.users
+        if(!usersArray.includes(data.userId)) return res.status(400).send({status:false,message:"user already removed or not in group"})
+        
+        //=-===-=-=-=-= Admin Validation =-=-=-=-=-=-=-=-=//
+        if(roomDetails.roomAdmin!= req.decode.userId) return res.status(400).send({status:false,message:"only admin can remove a member"})
+    
+        //=-=-=-==-=-=-=- Remove Member =-=-=-=-=-=-=-=-=-//
+        let finalData = await roomServices.removeMember(data.roomId,data.userId)
+        return res.status(200).send({status:true,data:finalData})  
+    
+    } catch (error) {
+        return res.status(500).send({status:false,message:error.message})
+    }  
+}
+
+module.exports = {createRoom,addMember,renameRoom,removeMember}

@@ -26,3 +26,21 @@ module.exports.updateRoom = async function(roomId,data){
         throw err.message
     }
 }
+
+module.exports.updateRoomName = async function(roomId, data){
+    try{
+        let result = await roomModel.findOneAndUpdate({_id:roomId},{$set:{roomName:data}},{new:true})
+        return result
+    }catch(err){
+        throw err.message
+    }
+}
+
+module.exports.removeMember = async function (roomId,data){
+    try{
+        let result = await roomModel.findOneAndUpdate({_id:roomId},{$pull:{users:data}},{new:true})
+        return result
+    }catch(err){
+        throw err.message
+    }
+}
