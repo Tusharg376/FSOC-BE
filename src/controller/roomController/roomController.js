@@ -1,6 +1,21 @@
 const roomServices = require('../../services/room/roomServices')
 const validations = require('../../utils/validations/validations')
 const uploadFile = require('../../utils/middlewares/aws')
+const userServices = require('../../services/user/userServices')
+
+const getAllRooms = async function(req,res){
+    try {
+        //=-=-=-=-=- Getting User Id from token =-=-=-=-=-//
+        let userId = req.decode.userId
+
+        //=-=-=-=-=-=-=-= getting room data =-=-=-=-=-=-=-//
+        let userRooms = await userServices.getUserData(userId)
+        
+        return res.status(200).send({status:false,message:userRooms})
+    } catch (error) {
+        return res.status(500).send({status:false,message:error.message});
+    }
+}
 
 const createRoom = async function(req,res){
     try {
@@ -41,9 +56,16 @@ const createRoom = async function(req,res){
         //=-===--=--=-=-== adding AdminID in data =-===-=-=-=--=-//
         data.roomAdmin = req.decode.userId
 
-        //=--=-=-=-=-=-=- create room -=-=-=-=-=-==-//
+        //=--=-=-=-=-=-=-=-=-=- create room -=-=-===-=-=-=-=-==-//
         let finalData = await roomServices.createRoom(data)
-    
+
+        //=-=-=-=-=-=- adding room Id in user data =-=-=-=-=-=-=-=//
+        if(users){
+            for(let i=0 ;i<data.users.length;i++){
+                await userServices.addRoom(data.users[i], finalData._id)
+            }
+        }
+
         return res.status(201).send({status:true,message:finalData})
         
     } catch (error) {
@@ -77,6 +99,10 @@ const addMember = async function(req,res){
         
         //=-=-=-=-==addition of user in room =-=-=--=-==-//
         let finalData = await roomServices.updateRoom(roomId, userId)
+
+        //=-=-=-=-=-addition of roomId in user data =-=-=-=//
+        await userServices.addRoom(userId, roomId)
+
         return res.status(200).send({status:true,message:finalData})
 
     } catch (error) {
@@ -136,6 +162,10 @@ const removeMember = async function(req,res){
     
         //=-=-=-==-=-=-=- Remove Member =-=-=-=-=-=-=-=-=-//
         let finalData = await roomServices.removeMember(data.roomId,data.userId)
+
+        //=-=-=-=-=-=- remove room from user data =-=-=-=-=-=-//
+        await userServices.removeRoom(data.userId,data.roomId)
+
         return res.status(200).send({status:true,data:finalData})  
     
     } catch (error) {
@@ -143,4 +173,4 @@ const removeMember = async function(req,res){
     }  
 }
 
-module.exports = {createRoom,addMember,renameRoom,removeMember}
+module.exports = {createRoom,addMember,renameRoom,removeMember,getAllRooms}

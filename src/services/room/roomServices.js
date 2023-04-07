@@ -44,3 +44,12 @@ module.exports.removeMember = async function (roomId,data){
         throw err.message
     }
 }
+
+module.exports.allRooms = async function (data) {
+    try{
+        let result = await roomModel.find({users:{$eq:data}})
+        return result
+    }catch(err){
+        throw err.message
+    }
+}

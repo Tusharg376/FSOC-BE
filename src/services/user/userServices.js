@@ -43,3 +43,31 @@ module.exports.updateUser = async (userId,data) => {
         throw error
     }
 }
+
+module.exports.getUserData = async (userId) => {
+    try {
+        let result = await userModel.findById(userId).select({room:1,_id:0})
+        console.log(result)
+        return result
+    } catch (error) {
+        throw error
+    }
+}
+
+module.exports.addRoom = async function(userId,roomId){
+    try {
+        let result = await userModel.findOneAndUpdate({_id:userId},{$push:{rooms:roomId}},{new:true})
+        return result
+    } catch (error) {
+        throw error
+    }
+}
+
+module.exports.removeRoom = async function(userId,roomId){
+    try {
+        let result = await userModel.findOneAndUpdate({_id:userId},{$pull:{rooms:roomId}},{new:true})
+        return result
+    } catch (error) {
+        throw error
+    }
+}
