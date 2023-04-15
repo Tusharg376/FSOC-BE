@@ -10,10 +10,6 @@ const roomSchema = mongoose.Schema({
         type: [objectId],
         ref: 'user'
     },
-    latestMessage:{
-        type: objectId,
-        ref: 'message'
-    },
     roomAdmin:{
         type: objectId,
         ref: 'user'

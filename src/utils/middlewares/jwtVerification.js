@@ -7,10 +7,12 @@ const authentication = async function(req,res,next){
          return res.status(401).send({status:false,message:'please provide token'})
      }
      jwt.verify(token,process.env.secretKey,(err,decode) => {
-         if(err){ return res.status(400).send({status:false,message :err.message})}
-         if(decode) req.decode = decode
-     })
-     next()
+         if(err){ return res.status(403).send({status:false,message :err.message})}
+         else {
+          req.decode = decode
+          next()
+        }
+      })
    } catch (error) {
         return res.status(500).send({status:false,message :error.message})
    }

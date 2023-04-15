@@ -5,12 +5,15 @@ const {connectDb} = require('./db/connectDB')
 app.use(express.json())
 require('dotenv').config()
 const multer = require('multer')
-app.use(multer().any())-
+const cors = require('cors')
+app.use(multer().any())
 
-app.use('/',routes)
+app.use(cors({origin:"*"}))
 
 connectDb()
 
-app.listen(process.env.port, function(){
-    console.log(`server is connected on port ${process.env.port}`)
+app.use('/',routes)
+
+let server = app.listen(process.env.port, function(){
+    console.log(`server is connected`)
 })

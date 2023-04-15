@@ -7,12 +7,13 @@ const messageSchema = mongoose.Schema({
         ref:'user'
     },
     content:{
-        type:String
+        type:String,
+        required:true
     },
     roomId:{
         type:objectId,
-        ref:'room'
+        ref:'Room'
     }
 },{timeStamps:true})
 
-module.exports = mongoose.model('room',messageSchema)
+module.exports = mongoose.model('message',messageSchema)

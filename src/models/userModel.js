@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema({
         required:true
     },
     rooms:{
-        type:[objectId]
+        type:[objectId],
+        ref:'Room'
     }
 },{timestamps:true})
 
