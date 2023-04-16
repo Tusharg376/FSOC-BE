@@ -136,5 +136,7 @@ then start the server
 
 ## environment variables
 **url:** mongo DB connection string
+
 **port:** port for running server on local
+
 **secretKey:** jwt secret key 
