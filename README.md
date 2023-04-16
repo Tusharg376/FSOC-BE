@@ -35,7 +35,7 @@ then start the server
 
 ## Demo
 
-link will come here after deployment
+- https://talkiesspot.onrender.com/
 
 
 ## Models
@@ -133,3 +133,10 @@ link will come here after deployment
 ```http
   GET /allMessages/roomId
 ```
+
+## environment variables
+**url:** mongo DB connection string
+
+**port:** port for running server on local
+
+**secretKey:** jwt secret key 
