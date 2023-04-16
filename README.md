@@ -19,7 +19,7 @@ To test this project
 
 At first clone the git repo
 ```bash
-  git clone "repo link here"
+  git clone https://github.com/Tusharg376/FSOC-BE.git
 ```
 
 then install all the dependencies
