@@ -92,7 +92,7 @@ module.exports.userCheck = async function(roomId,userId){
 
 module.exports.searchRoom = async function(data){
     try{
-        let result = await roomModel.find({roomName:data}).select({roomName:1,_id:0})
+        let result = await roomModel.find({roomName:data}).select({roomName:1})
         return result
     }catch(err){
         throw err.message

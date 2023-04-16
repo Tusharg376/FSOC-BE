@@ -102,7 +102,6 @@ const addMember = async function(req,res){
 
         if(!data) return res.status(400).send({status:false, message:"provide email"})
         let {email} = data
-    
         //=--==-==-=-=- roomId validation =-=-==-=-// 
         if(!roomId) return res.status(400).send({status:false,message:"please enter roomId"})
         
