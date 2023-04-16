@@ -21,6 +21,6 @@ const roomSchema = mongoose.Schema({
     profile:{
         type: String
     }
-},{timeStamps:true})
+},{timestamps:true})
 
 module.exports = mongoose.model('Room', roomSchema)

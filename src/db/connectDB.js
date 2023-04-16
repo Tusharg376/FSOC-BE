@@ -12,7 +12,5 @@ async function connectDb(){
     }
 } 
 
-// .then(console.log("database connected"))
-// .catch((err)=> err.message)
 
 module.exports = {connectDb}

@@ -14,6 +14,6 @@ const messageSchema = mongoose.Schema({
         type:objectId,
         ref:'Room'
     }
-},{timeStamps:true})
+},{timestamps:true})
 
 module.exports = mongoose.model('message',messageSchema)
