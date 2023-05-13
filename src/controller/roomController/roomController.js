@@ -210,7 +210,8 @@ const removeMember = async function(req,res){
 const searchRoom = async (req, res) => {
    try {
      let data = req.body
- 
+     let userId = req.decode.userId
+     
      //=-=-=-=-= check if data is present =-=-=-=-=//
      if(!data || !data.searchData) return res.status(400).send({status:false,message:"please provide something to search"})
  
@@ -218,7 +219,7 @@ const searchRoom = async (req, res) => {
      let regex = new RegExp(data.searchData,'g')
      
      //=-=-=-=-=-= search for room =-=-=-=-=-=-=-=//
-     let rooms = await roomServices.searchRoom(regex)
+     let rooms = await roomServices.searchRoom(regex,userId)
     
      //=-=-=-=-=-=- Returning rooms =-=-=-=-=-=-=-=//
      return res.status(200).send({status:true,data:rooms})
@@ -228,4 +229,45 @@ const searchRoom = async (req, res) => {
     }
 }
 
-module.exports = {createRoom,addMember,renameRoom,removeMember,getAllRooms,searchRoom,getRoomByRoomId}
+const searchOpenRooms = async (req, res) => {
+    
+    try {
+        //=-=-==-=- getting userId from token =-=-=-=-//
+        let userId = req.decode.userId
+    
+        //=-=-=-=-=- getting rooms data =-=-=-=-=-=-=-//
+        let finalData = await roomServices.findRooms(userId)
+    
+        //=-=-=-=-=- if no rooms found =-=-=-=-=-=-==//
+        if(!finalData) return res.status(200).send({status:false, message:"No Rooms found to Join"})
+    
+        //=-=-=-=-=- sending response =-=-=-=-=-=-=-=-//
+        return res.status(200).send({status:true, data:finalData})
+    
+    } catch (error) {
+        return res.status(500).send({status:false, message:error.message})
+    }
+}
+
+const joinRoom = async function (req,res){
+    try {
+        //=-=-=-=-=-=-= getting data =-=-=-=-=-==-=-=-//
+        let roomId = req.body.roomId
+        let userId = req.decode.userId
+
+        if(!roomId) return res.status(400).send({status:false, message:"please provide Room ID"})
+
+        //=-=-=-=-=-=-= updating room data =-=-=-=-==-=//
+        await roomServices.updateRoom(roomId, userId)
+
+        //=-=-=-=-=-=-= updateing userData =-==-=-=-=-=//
+        await userServices.addRoom(userId, roomId)
+
+        //=-=-=-=-=-=-=-= sending response=-=-=-=-=-=-=//
+        return res.status(200).send({status:true, message:"Room Joined Successfully"})
+    } catch (error) {
+        return res.status(500).send({status:false, message:error.message})    
+    }
+}
+
+module.exports = {createRoom,addMember,renameRoom,removeMember,getAllRooms,searchRoom,getRoomByRoomId,joinRoom,searchOpenRooms}
