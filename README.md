@@ -19,7 +19,7 @@ To test this project
 
 At first clone the git repo
 ```bash
-  git clone "repo link here"
+  git clone https://github.com/Tusharg376/FSOC-BE.git
 ```
 
 then install all the dependencies
@@ -81,60 +81,80 @@ then start the server
 ```http
   POST  /createuser
 ```
-
+user can create his account 
 
 #### user login
 
 ```http
   POST /login
 ```
+user can login into his account
+
 #### user profile update (protected)
 
 ```http
   PUT /updateUser
 ```
+user can update his profile picture and his name 
+
 #### get all rooms 
 
 ```http
   get /rooms
 ```
+for fetching all rooms data
+
 #### create room
 
 ```http
   POST /createRoom
 ```
+user can create a room
+
 #### add a member in room(protected)
 
 ```http
   POST /addMember/:roomId
 ```
+user can add members in existing room
+
 #### rename room(protected)
 
 ```http
   PUT /renameRoom/:roomId
 ```
+user can rename his room
+
 #### remove a member from room(protected)
 
 ```http
   PUT /removeMember/:roomId
 ```
+user can remove a member from his room
+
 #### search all rooms by room name(login required)
 
 ```http
   GET /searchRoom
 ```
+for search operation 
+
 #### send message(protected)
 
 ```http
   POST /sendMessage/:roomId
 ```
+user can send message
+
 #### get all messages(protected)
 
 ```http
   GET /allMessages/roomId
 ```
+to get all the message data of perticular room
 
 ## environment variables
+
 **url:** mongo DB connection string
 
 **port:** port for running server on local
