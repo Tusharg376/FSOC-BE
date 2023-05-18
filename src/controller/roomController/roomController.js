@@ -219,7 +219,7 @@ const searchJoinedRoom = async (req, res) => {
      let regex = new RegExp(data.searchData,'g')
      
      //=-=-=-=-=-= search for room =-=-=-=-=-=-=-=//
-     let rooms = await roomServices.searchRoom(regex,userId)
+     let rooms = await roomServices.searchJoinedRoom(regex,userId)
     
      //=-=-=-=-=-=- Returning rooms =-=-=-=-=-=-=-=//
      return res.status(200).send({status:true,data:rooms})
