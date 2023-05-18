@@ -207,7 +207,7 @@ const removeMember = async function(req,res){
     }  
 }
 
-const searchRoom = async (req, res) => {
+const searchJoinedRoom = async (req, res) => {
    try {
      let data = req.body
      let userId = req.decode.userId
@@ -229,7 +229,29 @@ const searchRoom = async (req, res) => {
     }
 }
 
-const searchOpenRooms = async (req, res) => {
+const searchOpenRoom = async (req, res) => {
+   try {
+     let data = req.body
+     let userId = req.decode.userId
+     
+     //=-=-=-=-= check if data is present =-=-=-=-=//
+     if(!data || !data.searchData) return res.status(400).send({status:false,message:"please provide something to search"})
+ 
+     //=-=-=-=-=-=- Getting room name if it is not given properly or subname is given =-=-=-=-=-=-=-=//
+     let regex = new RegExp(data.searchData,'g')
+     
+     //=-=-=-=-=-= search for room =-=-=-=-=-=-=-=//
+     let rooms = await roomServices.searchOpenRooms(regex,userId)
+    
+     //=-=-=-=-=-=- Returning rooms =-=-=-=-=-=-=-=//
+     return res.status(200).send({status:true,data:rooms})
+    
+    } catch (error) {
+        return res.status(500).send({status:false,message:error.message})
+    }
+}
+
+const getOpenRooms = async (req, res) => {
     
     try {
         //=-=-==-=- getting userId from token =-=-=-=-//
@@ -270,4 +292,4 @@ const joinRoom = async function (req,res){
     }
 }
 
-module.exports = {createRoom,addMember,renameRoom,removeMember,getAllRooms,searchRoom,getRoomByRoomId,joinRoom,searchOpenRooms}
+module.exports = {createRoom,addMember,renameRoom,removeMember,getAllRooms,searchJoinedRoom,getRoomByRoomId,joinRoom,getOpenRooms,searchOpenRoom}

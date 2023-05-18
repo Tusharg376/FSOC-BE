@@ -90,17 +90,23 @@ module.exports.userCheck = async function(roomId,userId){
     }
 }
 
-module.exports.searchRoom = async function(data,userId){
+module.exports.searchJoinedRoom = async function(data,userId){
     try{
-        let result = await roomModel.find({roomName:data}).select({roomName:1})
-        // let result = await roomModel.find({
-        //     roomName: data,
-        //     $elemMatch:{users:userId}   
-        //   }).select({ roomName: 1 });
-          
+        let result = await roomModel.find({$or:[{users:userId},{roomAdmin:userId}]},{roomName:data}).select({roomName:1})
         return result
     }catch(err){
         throw err.message
+    }
+}
+
+module.exports.searchOpenRooms = async function(data,userId){
+    try {
+        let result = await roomModel.find({users:{$nin:[userId]},roomAdmin:{$nin:[userId]},isPrivate:false,roomName:data})
+        .select({roomName:1,profile:1,roomAdmin:1})
+        .populate({path:"roomAdmin", select:"name"})
+        return result
+    } catch (error) {
+        throw error   
     }
 }
 
@@ -117,8 +123,8 @@ module.exports.getRoomData = async function(roomId){
 module.exports.findRooms = async function(userId){
     try {
         let result = await roomModel.find({users:{$nin:[userId]},roomAdmin:{$nin:[userId]},isPrivate:false})
-        .select({roomName:1,profile:1,users:1})
-        .populate({path:"users", select:"name"})
+        .select({roomName:1,profile:1,roomAdmin:1})
+        .populate({path:"roomAdmin", select:"name"})
         return result
     } catch (error) {
         throw error
